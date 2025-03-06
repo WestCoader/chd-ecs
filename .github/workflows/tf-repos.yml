@@ -1,0 +1,44 @@
+name: TF-ECS
+
+on:
+  push:
+    branches: [ "CHD-*" ]
+    paths:  
+      - tf-repos/*
+  pull request:
+    branches: [ "main" ]
+    paths:  
+      - tf-repos/*
+
+env:
+  GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
+
+jobs:
+  terraform:
+    runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+      - name: Install TFLint
+        run: |
+          terraform init
+          tflint install
+      - name: Run TFLint
+        working-directory: tf-repos/
+        run: tflint -f exitcode .
+        
+      - name: Terraform Validate
+        working-directory: tf-repos/
+        run: terraform validate
+      
+      - name: Terraform Plan
+        working-directory: tf-repos/
+        run: terraform plan -input=false
+        if: ${{ steps.terraform-validate.conclusion == 'success' }}
+
+      - name: Terraform Apply
+        working-directory: tf-repos/
+        run: terraform apply -input=false
+        if: ${{ (github.ref == 'refs/heads/main') && (steps.terraform-plan.conclusion == 'success') }}
+

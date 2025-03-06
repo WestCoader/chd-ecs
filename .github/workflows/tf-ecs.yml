@@ -1,0 +1,50 @@
+name: TF-ECS
+
+on:
+  push:
+    branches: [ "CHD-*" ]
+    paths:  
+      - tf-ecs/*
+  pull request:
+    branches: [ "main" ]
+    paths:  
+      - tf-ecs/*
+
+jobs:
+  terraform:
+    runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        
+      - name: Install TFLint
+        run: |
+          terraform init
+          tflint install
+
+      - name: Run TFLint
+        working-directory: tf-ecs/
+        run: tflint -f exitcode .
+        
+      - name: Terraform Validate
+        working-directory: tf-ecs/
+        run: terraform validate
+      
+      - name: Terraform Plan
+        working-directory: tf-ecs/
+        run: terraform plan -input=false
+        if: ${{ steps.terraform-validate.conclusion == 'success' }}
+
+      - name: Terraform Apply
+        working-directory: tf-ecs/
+        run: terraform apply -input=false
+        if: ${{ (github.ref == 'refs/heads/main') && (steps.terraform-plan.conclusion == 'success') }}
+
