@@ -1,6 +1,7 @@
 name: CHD-APP
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths: 

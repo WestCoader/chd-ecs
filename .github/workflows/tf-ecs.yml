@@ -1,6 +1,7 @@
 name: TF-ECS
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "CHD-*" ]
     paths:  
