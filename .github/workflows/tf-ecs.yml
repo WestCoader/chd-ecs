@@ -31,14 +31,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         
-      - name: Install TFLint
+      - name: TF Init
         working-directory: tf-ecs/
         run: |
           terraform init
-
-      # - name: Run TFLint
-      #   working-directory: tf-ecs/
-      #   run: tflint -f exitcode .
         
       - name: Terraform Validate
         working-directory: tf-ecs/
