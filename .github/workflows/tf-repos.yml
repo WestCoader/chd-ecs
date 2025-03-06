@@ -1,4 +1,4 @@
-name: TF-ECS
+name: TF-REPOS
 
 on:
   workflow_dispatch:
