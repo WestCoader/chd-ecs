@@ -1,0 +1,46 @@
+name: TF-REPOS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "CHD-*" ]
+    paths:  
+      - tf-repos/*
+  pull_request:
+    branches: [ "main" ]
+    paths:  
+      - tf-repos/*
+
+env:
+  GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  terraform:
+    runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: TF Init
+        working-directory: tf-repos/
+        run: |
+          terraform init
+        
+      - name: Terraform Validate
+        working-directory: tf-repos/
+        run: terraform validate
+      
+      - name: Terraform Plan
+        working-directory: tf-repos/
+        run: terraform plan -input=false
+        if: ${{ steps.terraform-validate.conclusion == 'success' }}
+
+      - name: Terraform Apply
+        working-directory: tf-repos/
+        run: terraform apply -input=false
+        if: ${{ (github.ref == 'refs/heads/main') && (steps.terraform-plan.conclusion == 'success') }}
+
