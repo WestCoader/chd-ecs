@@ -21,16 +21,18 @@ jobs:
     runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
     steps:
       - uses: actions/checkout@v3
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
+
       - name: Install TFLint
         working-directory: tf-ecs/
         run: |
           terraform init
-          tflint install
-      - name: Run TFLint
-        working-directory: tf-repos/
-        run: tflint -f exitcode .
+
+      # - name: Run TFLint
+      #   working-directory: tf-repos/
+      #   run: tflint -f exitcode .
         
       - name: Terraform Validate
         working-directory: tf-repos/

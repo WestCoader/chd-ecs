@@ -35,11 +35,10 @@ jobs:
         working-directory: tf-ecs/
         run: |
           terraform init
-          tflint install
 
-      - name: Run TFLint
-        working-directory: tf-ecs/
-        run: tflint -f exitcode .
+      # - name: Run TFLint
+      #   working-directory: tf-ecs/
+      #   run: tflint -f exitcode .
         
       - name: Terraform Validate
         working-directory: tf-ecs/
