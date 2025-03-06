@@ -14,7 +14,7 @@ on:
 env: 
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
+  
 jobs:
   terraform:
     runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
@@ -26,7 +26,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: us-west-2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
