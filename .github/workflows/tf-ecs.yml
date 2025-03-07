@@ -14,6 +14,7 @@ env:
   
 jobs:
   tf_pr:
+    if: ${{ github.event.pull_request.base.ref == 'main' }}
     runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
     steps:
       - uses: actions/checkout@v3
