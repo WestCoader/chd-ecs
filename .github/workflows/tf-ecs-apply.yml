@@ -1,0 +1,44 @@
+name: TF-ECS-APPLY
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - 'main'
+    paths:  
+      - tf-ecs/*
+      - .github/workflows/tf-ecs.yml
+
+env: 
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  
+jobs:
+
+  tf_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        
+      - name: TF Init
+        working-directory: tf-ecs/
+        run: |
+          terraform init
+
+      - name: Terraform Apply
+        working-directory: tf-ecs/
+        run: terraform apply -auto-approve
+        if: ${{ github.ref == 'refs/heads/main' }}

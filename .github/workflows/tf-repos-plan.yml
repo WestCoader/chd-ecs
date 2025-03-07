@@ -1,0 +1,39 @@
+name: TF-REPOS-PLAN
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+    types:
+      - opened
+    branches:
+      - 'main'
+    paths:  
+      - tf-repos/*
+      - .github/workflows/tf-repos.yml
+
+env:
+  GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  tf_pr:
+    runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: TF Init
+        working-directory: tf-repos/
+        run: |
+          terraform init
+        
+      - name: Terraform Validate
+        working-directory: tf-repos/
+        run: terraform validate
+      
+      - name: Terraform Plan
+        working-directory: tf-repos/
+        run: terraform plan

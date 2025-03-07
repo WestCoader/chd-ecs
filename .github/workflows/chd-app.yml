@@ -3,9 +3,10 @@ name: CHD-APP
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
     paths: 
       - chd-app/*
+      - .github/workflows/chd-app.yml
 
 env:
   AWS_REGION: us-west-2

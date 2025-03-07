@@ -1,11 +1,15 @@
-name: TF-REPOS
+name: TF-REPOS-APPLY
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "main" ]
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - 'main'
     paths:  
       - tf-repos/*
+      - .github/workflows/tf-repos.yml
 
 env:
   GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
@@ -13,7 +17,9 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
-  terraform:
+
+  tf_merged:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
     steps:
       - uses: actions/checkout@v3
@@ -25,18 +31,8 @@ jobs:
         working-directory: tf-repos/
         run: |
           terraform init
-        
-      - name: Terraform Validate
-        working-directory: tf-repos/
-        run: terraform validate
-      
-      - name: Terraform Plan
-        working-directory: tf-repos/
-        run: terraform plan -input=false
-        if: github.event_name == 'pull_request'
 
       - name: Terraform Apply
         working-directory: tf-repos/
-        run: terraform apply -input=false
-        if: ${{ (github.ref == 'refs/heads/main') }}
-
+        run: terraform apply -auto-approve
+        if: ${{ github.ref == 'refs/heads/main' }}
