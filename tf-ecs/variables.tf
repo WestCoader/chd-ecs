@@ -15,3 +15,8 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable public_ip {
+  type = bool
+  default = true
+}

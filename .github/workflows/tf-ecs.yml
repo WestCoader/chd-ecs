@@ -40,7 +40,7 @@ jobs:
       - name: Terraform Plan
         working-directory: tf-ecs/
         run: terraform plan -input=false
-        if: ${{ (steps.terraform-validate.conclusion == 'success') && (github.ref != 'refs/heads/main') }}
+        if: github.event_name == 'pull_request'
 
       - name: Terraform Apply
         working-directory: tf-ecs/
