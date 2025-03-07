@@ -31,14 +31,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         
-      - name: TF Init
+      - name: TF Init/Fmt/Validate
         working-directory: tf-ecs/
         run: |
           terraform init
-        
-      - name: Terraform Validate
-        working-directory: tf-ecs/
-        run: terraform validate
+          terrform fmt
+          terraform validate
+
       
       - name: Terraform Plan
         working-directory: tf-ecs/

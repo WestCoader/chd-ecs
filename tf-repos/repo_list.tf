@@ -2,6 +2,8 @@
 
 locals {
   repo_list = {
-    chd-ecs = {},
+    chd-ecs     = {},
+    sample-repo = {},
+    sample-repo2 = {}
   }
 }
