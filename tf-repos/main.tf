@@ -6,9 +6,9 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "chd-state"
-    key = "tf-repos.state"
-    region = "us-west-2"
+    bucket         = "chd-state"
+    key            = "tf-repos.state"
+    region         = "us-west-2"
     dynamodb_table = "chd-state"
   }
 }
