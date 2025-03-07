@@ -41,4 +41,4 @@ jobs:
     
     - name: Force new deployment
       run: |
-        aws ecs update-service --cluster chd-cluster --service chd-service --force-new-deployment
+        aws ecs update-service --cluster chd-cluster --service chd-app --force-new-deployment
