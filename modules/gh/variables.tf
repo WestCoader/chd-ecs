@@ -18,16 +18,6 @@ variable "branch_name" {
   default     = "main"
 }
 
-variable "status_checks_strict" {
-  type        = bool
-  default     = true
-}
-
-variable "status_checks_contexts" {
-  type        = list(string)
-  default     = []
-}
-
 variable "required_approving_review_count" {
   type        = number
   default     = 1
