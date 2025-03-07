@@ -3,10 +3,6 @@ name: TF-REPOS
 on:
   workflow_dispatch:
   push:
-    branches: [ "CHD-*" ]
-    paths:  
-      - tf-repos/*
-  pull_request:
     branches: [ "main" ]
     paths:  
       - tf-repos/*
@@ -31,16 +27,17 @@ jobs:
           terraform init
         
       - name: Terraform Validate
+        id: terraform-validate
         working-directory: tf-repos/
         run: terraform validate
       
       - name: Terraform Plan
         working-directory: tf-repos/
         run: terraform plan -input=false
-        if: ${{ steps.terraform-validate.conclusion == 'success' }}
+        if: ${{ (steps.terraform-validate.conclusion == 'success') && (github.ref != 'refs/heads/main') }}
 
       - name: Terraform Apply
         working-directory: tf-repos/
         run: terraform apply -input=false
-        if: ${{ (github.ref == 'refs/heads/main') && (steps.terraform-plan.conclusion == 'success') }}
+        if: ${{ (github.ref == 'refs/heads/main') }}
 
