@@ -40,7 +40,7 @@ jobs:
       
       - name: Terraform Plan
         working-directory: tf-ecs/
-        run: terraform plan -input=false
+        run: terraform plan
 
   tf_merged:
     if: github.event.pull_request.merged == true
@@ -65,5 +65,5 @@ jobs:
 
       - name: Terraform Apply
         working-directory: tf-ecs/
-        run: terraform apply -input=false
+        run: terraform apply -auto-approve
         if: ${{ github.ref == 'refs/heads/main' }}
