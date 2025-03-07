@@ -8,11 +8,6 @@ resource "github_branch_protection" "repo" {
   repository_id = github_repository.repo.node_id
   pattern     = var.branch_name
 
-  required_status_checks {
-    strict   = var.status_checks_strict
-    contexts = var.status_checks_contexts
-  }
-
   required_pull_request_reviews {
     required_approving_review_count = var.required_approving_review_count
     dismiss_stale_reviews          = var.dismiss_stale_reviews
