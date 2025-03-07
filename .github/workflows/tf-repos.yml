@@ -6,6 +6,7 @@ on:
     branches: [ "main" ]
     paths:  
       - tf-repos/*
+      - .github/workflows/tf-repos.yml
 
 env:
   GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
@@ -13,7 +14,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
-  terraform:
+  tf_pr:
     runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
     steps:
       - uses: actions/checkout@v3
@@ -33,10 +34,22 @@ jobs:
       - name: Terraform Plan
         working-directory: tf-repos/
         run: terraform plan -input=false
-        if: github.event_name == 'pull_request'
+
+  tf_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-24.04  # Pin version to ensure no breaking updates
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: TF Init
+        working-directory: tf-repos/
+        run: |
+          terraform init
 
       - name: Terraform Apply
         working-directory: tf-repos/
         run: terraform apply -input=false
-        if: ${{ (github.ref == 'refs/heads/main') }}
-
+        if: ${{ github.ref == 'refs/heads/main' }}
