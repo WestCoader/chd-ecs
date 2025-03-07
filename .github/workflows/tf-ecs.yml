@@ -3,11 +3,7 @@ name: TF-ECS
 on:
   workflow_dispatch:
   push:
-    branches: [ "CHD-*" ]
-    paths:  
-      - tf-ecs/*
-  pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
     paths:  
       - tf-ecs/*
 
@@ -37,16 +33,17 @@ jobs:
           terraform init
         
       - name: Terraform Validate
+        id: terraform-validate
         working-directory: tf-ecs/
         run: terraform validate
       
       - name: Terraform Plan
         working-directory: tf-ecs/
         run: terraform plan -input=false
-        if: ${{ steps.terraform-validate.conclusion == 'success' }}
+        if: ${{ (steps.terraform-validate.conclusion == 'success') && (github.ref != 'refs/heads/main') }}
 
       - name: Terraform Apply
         working-directory: tf-ecs/
         run: terraform apply -input=false
-        if: ${{ (github.ref == 'refs/heads/main') && (steps.terraform-plan.conclusion == 'success') }}
+        if: ${{ github.ref == 'refs/heads/main') }}
 
