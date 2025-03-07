@@ -3,6 +3,5 @@
 locals {
   repo_list = {
     chd-ecs = {},
-    test-repo-001 = {},
   }
 }

@@ -20,12 +20,10 @@ resource "github_branch_protection" "repo" {
   }
 
   enforce_admins = var.enforce_admins
-  # restrictions   = var.branch_restrictions
 }
 
 resource "github_actions_variable" "repo" {
   variable_name   = var.AWS_REGION
-  # visibility      = var.visibility
   value           = var.aws_region_value
   repository = github_repository.repo.id
   depends_on = [ github_repository.repo ]

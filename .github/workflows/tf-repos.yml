@@ -27,14 +27,13 @@ jobs:
           terraform init
         
       - name: Terraform Validate
-        id: terraform-validate
         working-directory: tf-repos/
         run: terraform validate
       
       - name: Terraform Plan
         working-directory: tf-repos/
         run: terraform plan -input=false
-        if: ${{ (steps.terraform-validate.conclusion == 'success') && (github.ref != 'refs/heads/main') }}
+        if: github.event_name == 'pull_request'
 
       - name: Terraform Apply
         working-directory: tf-repos/
