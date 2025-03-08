@@ -1,5 +1,11 @@
 # chd-ecs
 
+Release marked, see notes:
+
+https://github.com/WestCoader/chd-ecs/releases/tag/v1.0
+
+=====
+
 Workflows
 
 CHD-APP - Deploys containerized App
